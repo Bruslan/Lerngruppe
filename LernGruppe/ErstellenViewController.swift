@@ -7,14 +7,43 @@
 //
 
 import UIKit
+import Firebase
 
 class ErstellenViewController: UIViewController {
 
+    @IBOutlet weak var Instituttf: UITextField!
+    @IBOutlet weak var Fachtf: UITextField!
+    @IBOutlet weak var NameTF: UITextField!
+    @IBOutlet weak var Suchtexrt: UITextView!
+    var docRef: CollectionReference!
+   
+    
+    @IBAction func SaveEntry(_ sender: Any) {
+        
+        docRef.document(Fachtf.text!).setData([
+            "Institution": Instituttf.text,
+            "Text": Suchtexrt.text,
+            "User": NameTF.text
+        ]) { err in
+            if let err = err {
+                print("Error writing document: \(err)")
+            } else {
+                print("Document successfully written!")
+            }
+        }
+        
+        performSegue(withIdentifier: "backtoHome", sender: self)
+        
+        
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
+        docRef = Firestore.firestore().collection("Lerngruppen")
 
         // Do any additional setup after loading the view.
     }
+    
+    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

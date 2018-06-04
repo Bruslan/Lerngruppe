@@ -7,12 +7,22 @@
 //
 
 import UIKit
+import Firebase
 
 class SecondViewController: UIViewController {
-
+    @IBOutlet weak var Userlabel: UILabel!
+    var docRef: DocumentReference!
+    
+    @IBOutlet weak var TextEintrag: UITextView!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        Userlabel.text = EintragListe[myindex]
+        docRef = Firestore.firestore().collection("Lerngruppen").document(EintragListe[myindex])
 
+        
+   
         // Do any additional setup after loading the view.
     }
 
@@ -20,6 +30,23 @@ class SecondViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        docRef.getDocument { (document, error) in
+            if let document = document, document.exists {
+                let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
+                print("Document data: \(dataDescription)")
+                self.TextEintrag.text = dataDescription
+                //
+            } else {
+                print("Document does not exist")
+            }
+        }
+        
+        
+    }
+
     
 
     /*
